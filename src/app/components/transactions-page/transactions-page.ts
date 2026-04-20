@@ -4,10 +4,10 @@ import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { startWith } from 'rxjs';
-import { TransactionType } from '../../../core/models/transaction.model';
-import { CategoryService } from '../../../core/services/category.service';
-import { UserAccountService } from '../../../core/services/user-account.service';
-import { TransactionService } from '../../../core/services/transaction.service';
+import { TransactionType } from '../../core/models/transaction.model';
+import { CategoryService } from '../../core/services/category.service';
+import { UserAccountService } from '../../core/services/user-account.service';
+import { TransactionService } from '../../core/services/transaction.service';
 
 @Component({
   selector: 'app-transactions-page',

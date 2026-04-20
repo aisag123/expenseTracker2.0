@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { BudgetService } from '../../../core/services/budget.service';
-import { CategoryService } from '../../../core/services/category.service';
-import { TransactionService } from '../../../core/services/transaction.service';
-import { UserAccountService } from '../../../core/services/user-account.service';
+import { BudgetService } from '../../core/services/budget.service';
+import { CategoryService } from '../../core/services/category.service';
+import { TransactionService } from '../../core/services/transaction.service';
+import { UserAccountService } from '../../core/services/user-account.service';
 
 interface CategorySlice {
   category: string;
