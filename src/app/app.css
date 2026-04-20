@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: var(--app-background);
+  color: var(--app-foreground);
+  font-family: Inter, "Segoe UI", Roboto, sans-serif;
+}
+
+.app-shell {
+  min-height: 100dvh;
+}

@@ -5,13 +5,8 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 @Component({
   selector: 'app-root',
   imports: [NavbarComponent, RouterOutlet],
-  template: `
-    <app-navbar></app-navbar>
-    <main class="app-shell">
-      <router-outlet></router-outlet>
-    </main>
-  `,
-  styleUrl: './app-shell.css',
+  templateUrl: './app.html',
+  styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {}
