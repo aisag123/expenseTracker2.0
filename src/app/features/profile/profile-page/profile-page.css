@@ -1,0 +1,97 @@
+.profile-page {
+  min-height: 100dvh;
+  place-items: center;
+  padding: 3rem;
+}
+
+.profile-card {
+  width: min(100%, 540px);
+  background: var(--panel-background);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--panel-border);
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0 1rem;
+}
+
+form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+input {
+  border: 1px solid var(--input-border);
+  border-radius: 0.7rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  background: var(--input-background);
+  color: var(--text-primary);
+}
+
+input:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+button,
+.button-link {
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--accent-start);
+  color: var(--accent-contrast);
+}
+
+button:hover,
+.button-link:hover {
+  filter: brightness(0.95);
+}
+
+.secondary,
+.secondary-link {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+}
+
+.secondary:hover,
+.secondary-link:hover {
+  filter: brightness(0.97);
+}
+
+.message {
+  margin-top: 1rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.65rem;
+  background: var(--success-surface);
+  color: var(--success-foreground);
+}
+
+.error-message {
+  background: var(--danger-surface);
+  color: var(--danger-foreground);
+}

@@ -1,0 +1,206 @@
+<section class="dashboard-page">
+  @if (currentUser()) {
+    <button type="button" class="notifications-toggle" (click)="openNotifications()">
+      Budget notifications
+      <span class="notifications-count">{{ notifications().length }}</span>
+    </button>
+
+    @if (notificationsOpen()) {
+      <button
+        type="button"
+        class="drawer-backdrop"
+        aria-label="Close budget notifications"
+        (click)="closeNotifications()"
+      ></button>
+    }
+
+    <aside
+      class="notifications-drawer"
+      [class.open]="notificationsOpen()"
+      aria-label="Budget notifications"
+      aria-live="polite"
+    >
+      <div class="drawer-header">
+        <div>
+          <h2>Budget status</h2>
+          <p>Good, near-limit, at-limit, and over-budget items for the selected month.</p>
+        </div>
+        <button
+          type="button"
+          class="drawer-close"
+          (click)="closeNotifications()"
+          aria-label="Close notifications"
+        >
+          x
+        </button>
+      </div>
+
+      @if (notifications().length === 0) {
+        <p class="empty-state drawer-empty">No budgets set for {{ selectedMonth() }}.</p>
+      } @else {
+        <ul class="notification-list">
+          @for (item of notifications(); track item.category) {
+            <li
+              class="notification-item"
+              [class.success]="item.tone === 'success'"
+              [class.warning]="item.tone === 'warning'"
+              [class.danger]="item.tone === 'danger'"
+            >
+              <div class="notification-row">
+                <strong>{{ item.icon }} {{ item.category }}</strong>
+                <span
+                  class="status-pill"
+                  [class.success]="item.tone === 'success'"
+                  [class.warning]="item.tone === 'warning'"
+                  [class.danger]="item.tone === 'danger'"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+              <p>{{ item.detail }}</p>
+              <small
+                >Budget {{ item.amount | currency }} • Actual {{ item.spent | currency }}</small
+              >
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <div class="dashboard-layout">
+      <article class="panel" aria-labelledby="summary-title">
+        <div class="title-row">
+          <h1 id="summary-title">Dashboard & analytics</h1>
+          <input
+            id="month"
+            type="month"
+            [value]="selectedMonth()"
+            (input)="onMonthChange($any($event.target).value)"
+          />
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span>Monthly income</span>
+            <strong>{{ monthlyIncome() | currency }}</strong>
+          </div>
+          <div class="summary-item">
+            <span>Monthly expense</span>
+            <strong>{{ monthlyExpense() | currency }}</strong>
+          </div>
+          <div class="summary-item">
+            <span>Net</span>
+            <strong>{{ monthlyBalance() | currency }}</strong>
+          </div>
+        </div>
+
+        <h2>Income vs expense</h2>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <span>Income</span>
+            <div class="bar-track">
+              <div class="bar-fill income" [style.width.%]="incomeBarPercent()"></div>
+            </div>
+            <strong>{{ monthlyIncome() | currency }}</strong>
+          </div>
+          <div class="bar-row">
+            <span>Expense</span>
+            <div class="bar-track">
+              <div class="bar-fill expense" [style.width.%]="expenseBarPercent()"></div>
+            </div>
+            <strong>{{ monthlyExpense() | currency }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel" aria-labelledby="pie-title">
+        <h2 id="pie-title">Category-wise spending</h2>
+
+        <div class="pie-layout">
+          <div class="pie" [style.background]="pieGradient()"></div>
+          <ul class="legend">
+            @if (categorySlices().length === 0) {
+              <li>No expenses for selected month.</li>
+            } @else {
+              @for (slice of categorySlices(); track slice.category) {
+                <li>
+                  <span class="dot" [style.background]="slice.color"></span>
+                  <span>{{ slice.icon }} {{ slice.category }}</span>
+                  <strong>{{ slice.amount | currency }} ({{ slice.percent.toFixed(1) }}%)</strong>
+                </li>
+              }
+            }
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel" aria-labelledby="budget-title">
+        <h2 id="budget-title">Budget planning</h2>
+        <p>Set monthly budgets by category and get near-limit, at-limit, and exceeded alerts.</p>
+
+        <form [formGroup]="budgetForm" (ngSubmit)="saveBudget()" novalidate>
+          <label for="budgetCategory">Category</label>
+          <select id="budgetCategory" formControlName="category">
+            @for (category of categories(); track category) {
+              <option [value]="category">{{ category }}</option>
+            }
+          </select>
+
+          <label for="budgetAmount">Budget amount</label>
+          <input id="budgetAmount" type="number" min="0.01" step="0.01" formControlName="amount" />
+
+          <div class="form-actions">
+            <button type="submit">Save budget</button>
+          </div>
+        </form>
+
+        @if (feedback()) {
+          <p class="message">{{ feedback() }}</p>
+        }
+      </article>
+
+      <article class="panel" aria-labelledby="comparison-title">
+        <h2 id="comparison-title">Budget vs actual</h2>
+
+        @if (budgetRows().length === 0) {
+          <p class="empty-state">No budgets set for {{ selectedMonth() }}.</p>
+        } @else {
+          <ul class="budget-list">
+            @for (row of budgetRows(); track row.category) {
+              <li>
+                <div class="budget-head">
+                  <div>
+                    <span class="dot" [style.background]="row.color"></span>
+                    <strong>{{ row.icon }} {{ row.category }}</strong>
+                  </div>
+                  <button type="button" class="danger" (click)="removeBudget(row.category)">
+                    Remove
+                  </button>
+                </div>
+                <p>Budget: {{ row.amount | currency }} • Actual: {{ row.spent | currency }}</p>
+                <div class="progress-track">
+                  <div
+                    class="progress-fill"
+                    [class.ok]="row.status === 'ok'"
+                    [class.near-limit]="row.status === 'near-limit'"
+                    [class.at-limit]="row.status === 'at-limit'"
+                    [class.exceeded]="row.status === 'exceeded'"
+                    [style.width.%]="row.ratio > 1 ? 100 : row.ratio * 100"
+                  ></div>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </article>
+    </div>
+  } @else {
+    <div class="panel">
+      <h1>Log in to view dashboard</h1>
+      <div class="form-actions">
+        <a class="link-button" routerLink="/login">Go to login</a>
+        <a class="link-button secondary-link" routerLink="/signup">Go to sign up</a>
+      </div>
+    </div>
+  }
+</section>
